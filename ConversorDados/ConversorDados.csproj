@@ -9,7 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Context\" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Vinum\src\Vinum.Core\Vinum.Core.csproj" />
+    <ProjectReference Include="..\..\Vinum\src\Vinum.Entidades\Vinum.Entidades.csproj" />
+    <ProjectReference Include="..\..\Vinum\src\Vinum.Infra\Vinum.Infra.csproj" />
   </ItemGroup>
 
 </Project>
