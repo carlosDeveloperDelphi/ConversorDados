@@ -188,7 +188,7 @@
             // 
             // btnMovimentacao
             // 
-            btnMovimentacao.Location = new Point(234, 182);
+            btnMovimentacao.Location = new Point(17, 182);
             btnMovimentacao.Name = "btnMovimentacao";
             btnMovimentacao.Size = new Size(168, 23);
             btnMovimentacao.TabIndex = 13;
@@ -198,7 +198,7 @@
             // 
             // btnMovFinanceiro
             // 
-            btnMovFinanceiro.Location = new Point(17, 211);
+            btnMovFinanceiro.Location = new Point(192, 182);
             btnMovFinanceiro.Name = "btnMovFinanceiro";
             btnMovFinanceiro.Size = new Size(107, 23);
             btnMovFinanceiro.TabIndex = 14;
@@ -228,7 +228,7 @@
             // 
             // btnVenda
             // 
-            btnVenda.Location = new Point(126, 211);
+            btnVenda.Location = new Point(301, 182);
             btnVenda.Name = "btnVenda";
             btnVenda.Size = new Size(75, 23);
             btnVenda.TabIndex = 17;
@@ -238,7 +238,7 @@
             // 
             // btnVendaItem
             // 
-            btnVendaItem.Location = new Point(207, 211);
+            btnVendaItem.Location = new Point(382, 182);
             btnVendaItem.Name = "btnVendaItem";
             btnVendaItem.Size = new Size(75, 23);
             btnVendaItem.TabIndex = 18;
@@ -248,7 +248,7 @@
             // 
             // btnCarne
             // 
-            btnCarne.Location = new Point(288, 211);
+            btnCarne.Location = new Point(17, 254);
             btnCarne.Name = "btnCarne";
             btnCarne.Size = new Size(75, 23);
             btnCarne.TabIndex = 19;
@@ -257,7 +257,7 @@
             // 
             // btnCarneParcela
             // 
-            btnCarneParcela.Location = new Point(369, 211);
+            btnCarneParcela.Location = new Point(98, 254);
             btnCarneParcela.Name = "btnCarneParcela";
             btnCarneParcela.Size = new Size(117, 23);
             btnCarneParcela.TabIndex = 20;
@@ -266,7 +266,7 @@
             // 
             // btnControleMovimenatcao
             // 
-            btnControleMovimenatcao.Location = new Point(17, 182);
+            btnControleMovimenatcao.Location = new Point(221, 254);
             btnControleMovimenatcao.Name = "btnControleMovimenatcao";
             btnControleMovimenatcao.Size = new Size(103, 23);
             btnControleMovimenatcao.TabIndex = 21;
@@ -275,7 +275,7 @@
             // 
             // btnMovAcesso
             // 
-            btnMovAcesso.Location = new Point(126, 182);
+            btnMovAcesso.Location = new Point(330, 254);
             btnMovAcesso.Name = "btnMovAcesso";
             btnMovAcesso.Size = new Size(102, 23);
             btnMovAcesso.TabIndex = 22;
@@ -284,7 +284,7 @@
             // 
             // btnNotaFiscalComp
             // 
-            btnNotaFiscalComp.Location = new Point(17, 240);
+            btnNotaFiscalComp.Location = new Point(17, 283);
             btnNotaFiscalComp.Name = "btnNotaFiscalComp";
             btnNotaFiscalComp.Size = new Size(138, 23);
             btnNotaFiscalComp.TabIndex = 23;
@@ -293,7 +293,7 @@
             // 
             // btnNFCompraItem
             // 
-            btnNFCompraItem.Location = new Point(161, 240);
+            btnNFCompraItem.Location = new Point(164, 283);
             btnNFCompraItem.Name = "btnNFCompraItem";
             btnNFCompraItem.Size = new Size(118, 23);
             btnNFCompraItem.TabIndex = 24;
@@ -313,7 +313,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(507, 300);
+            ClientSize = new Size(507, 339);
             Controls.Add(btnPermissao);
             Controls.Add(btnNFCompraItem);
             Controls.Add(btnNotaFiscalComp);
@@ -342,6 +342,7 @@
             Controls.Add(btnEstado);
             Name = "FrmConversorDados";
             Text = "....::::Conversor de Dados::::....";
+            Load += FrmConversorDados_Load;
             ResumeLayout(false);
         }
 

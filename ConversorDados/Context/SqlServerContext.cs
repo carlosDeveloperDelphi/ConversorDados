@@ -8,7 +8,7 @@
 
         public SqlServerContext(string banco)
         {
-            connectionString = $"Server={_servidor};Database={banco};Trusted_Connection=True";
+            connectionString = $"Server={_servidor};Database={banco};User ID=sa;Password=#grunt1234@;Integrated Security=SSPI;TrustServerCertificate=True";
         }
 
     }

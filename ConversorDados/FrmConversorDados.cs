@@ -1,6 +1,5 @@
 using ConversorDados.Context;
 using Microsoft.Data.SqlClient;
-using Microsoft.IdentityModel.Abstractions;
 using Vinum.Core.Negocios;
 using Vinum.Entidades.Enums.Modelos;
 using Vinum.Entidades.Modelos;
@@ -20,7 +19,7 @@ namespace ConversorDados
             V090Pla model = null!;
             V090PlaNG _NG = new V090PlaNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [ClubePlano]";
+            string query = "SELECT * FROM [ClubePlano]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -35,7 +34,9 @@ namespace ConversorDados
                         model.CodPla = Convert.ToInt32(leitor["Id"].ToString());
                         model.NomPla = leitor["Nome"].ToString();
                         model.VlrPla = Convert.ToDecimal(leitor["Valor"].ToString());
-                        model.ImpPla = Convert.ToBoolean(leitor["ImpAdEscolinha"].ToString());
+                        if (leitor["ImpAdEscolinha"].ToString().Equals("0"))
+                            model.ImpPla = false;
+                        else model.ImpPla = true;
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
                         lista.Add(model);
                     }
@@ -50,7 +51,7 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
-            MessageBox.Show("Dados da Tabela Convertido com Sucesso.");
+            MessageBox.Show("Dados da Tabela Plano Convertido com Sucesso.");
         }
 
         private void btnEstado_Click(object sender, EventArgs e)
@@ -59,7 +60,7 @@ namespace ConversorDados
             V030Est model = null;
             V030EstNG _NG = new V030EstNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Estado]";
+            string query = "SELECT * FROM [Estado]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -87,6 +88,8 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+
+            MessageBox.Show("Dados da Tabela Estado Convertido com Sucesso.");
         }
 
         private void btnCidade_Click(object sender, EventArgs e)
@@ -95,7 +98,7 @@ namespace ConversorDados
             V030Cid model = null;
             V030CidNG _NG = new V030CidNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Cidade]";
+            string query = "SELECT * FROM [Cidade]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -110,7 +113,9 @@ namespace ConversorDados
                         model.CodCid = Convert.ToInt32(leitor["Id"].ToString());
                         model.NomCid = leitor["Nome"].ToString();
                         model.IbgCid = Convert.ToInt32(leitor["Codigo_IBGE"].ToString());
-                        model.CapCid = Convert.ToBoolean(leitor["Capital"].ToString());
+                        if (leitor["Capital"].ToString().Equals("0"))
+                            model.CapCid = false;
+                        else model.CapCid = true;
                         model.CodEst = Convert.ToInt32(leitor["EstadoId"].ToString());
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
                         lista.Add(model);
@@ -125,6 +130,7 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+            MessageBox.Show("Dados da Tabela Cidade Convertido com Sucesso.");
         }
 
         private void btnDepartamento_Click(object sender, EventArgs e)
@@ -133,7 +139,7 @@ namespace ConversorDados
             V070Dep model = null;
             V070DepNG _NG = new V070DepNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Departamento]";
+            string query = "SELECT * FROM [Departamento]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -160,6 +166,7 @@ namespace ConversorDados
                 if (!_NG.Inserir(model).Result)
                     return;
             }
+            MessageBox.Show("Dados da Tabela Departamento Convertido com Sucesso.");
         }
 
         private void btnUsuario_Click(object sender, EventArgs e)
@@ -168,7 +175,7 @@ namespace ConversorDados
             V005Usu model = null;
             V005UsuNG _NG = new V005UsuNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Usuario]";
+            string query = "SELECT * FROM [Usuario]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -196,6 +203,7 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+            MessageBox.Show("Dados da Tabela Usuário Convertido com Sucesso.");
         }
 
         private void btnEquipe_Click(object sender, EventArgs e)
@@ -204,7 +212,7 @@ namespace ConversorDados
             V080Eqp model = null;
             V080EqpNG _NG = new V080EqpNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Equipe]";
+            string query = "SELECT * FROM [Equipe]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -232,6 +240,7 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+            MessageBox.Show("Dados da Tabela Equipe Convertido com Sucesso.");
         }
 
         private void btnPontoVenda_Click(object sender, EventArgs e)
@@ -240,7 +249,7 @@ namespace ConversorDados
             V092Ptv model = null;
             V092PtvNG _NG = new V092PtvNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [PontoDeVenda]";
+            string query = "SELECT * FROM [PontoDeVenda]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -267,6 +276,7 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+            MessageBox.Show("Dados da Tabela Ponto de Venda Convertido com Sucesso.");
         }
 
         private void btnVendedor_Click(object sender, EventArgs e)
@@ -275,7 +285,7 @@ namespace ConversorDados
             V092Ven model = null;
             V092VenNG _NG = new V092VenNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Vendedor]";
+            string query = "SELECT * FROM [Vendedor]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -307,6 +317,7 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+            MessageBox.Show("Dados da Tabela Vendedor Convertido com Sucesso.");
         }
 
         private void btnEmpresa_Click(object sender, EventArgs e)
@@ -315,7 +326,7 @@ namespace ConversorDados
             V010Emp model = null;
             V010EmpNG _NG = new V010EmpNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Empresa]";
+            string query = "SELECT * FROM [Empresa]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -340,6 +351,7 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+            MessageBox.Show("Dados da Tabela Empresa Convertido com Sucesso.");
         }
 
         private void btnFilial_Click(object sender, EventArgs e)
@@ -348,7 +360,7 @@ namespace ConversorDados
             V010Fil model = null;
             V010FilNG _NG = new V010FilNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Filial]";
+            string query = "SELECT * FROM [Filial]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -390,6 +402,7 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+            MessageBox.Show("Dados da Tabela Filial Convertido com Sucesso.");
         }
 
         private void btnProduto_Click(object sender, EventArgs e)
@@ -398,7 +411,7 @@ namespace ConversorDados
             V075Pro model = null;
             V075ProNG _NG = new V075ProNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Produto]";
+            string query = "SELECT * FROM [Produto]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -428,6 +441,7 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+            MessageBox.Show("Dados da TAbela Produto Convertido com Sucesso.");
         }
 
         private void btnCliente_Click(object sender, EventArgs e)
@@ -436,7 +450,7 @@ namespace ConversorDados
             V040Cli model = null;
             V040CliNG _NG = new V040CliNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Cliente]";
+            string query = "SELECT * FROM [Cliente]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -463,7 +477,9 @@ namespace ConversorDados
                         model.TpPCli = Convert.ToInt32(leitor["FisJur"].ToString());
                         model.DocCli = leitor["CpfIe"].ToString();
                         model.RGIeCli = leitor["RgCnpj"].ToString();
-                        model.SitCli = Convert.ToBoolean(leitor["Situacao"].ToString());
+                        if (leitor["Situacao"].ToString().Equals("0"))
+                            model.SitCli = false;
+                        else model.SitCli = true;
                         model.OBSCli = leitor["Obs"].ToString();
                         model.NascCli = Convert.ToDateTime(leitor["DataNascimento"].ToString());
                         model.TpSCli = leitor["TipoSanguineo"].ToString();
@@ -472,7 +488,9 @@ namespace ConversorDados
                         model.NomRep = leitor["NomeResponsavel"].ToString();
                         model.RGRep = leitor["RgResponsavel"].ToString();
                         model.CPFRep = leitor["CpfResponsavel"].ToString();
-                        model.MenIda = Convert.ToBoolean(leitor["MenorIdade"].ToString());
+                        if (leitor["MenorIdade"].ToString().Equals("0"))
+                            model.MenIda = false;
+                        else model.MenIda = true;
                         model.CodPla = Convert.ToInt32(leitor["ClubePlanoId"].ToString());
                         model.CodCid = Convert.ToInt32(leitor["CidadeId"].ToString());
                         model.CodVen = Convert.ToInt32(leitor["VendadeprId"].ToString());
@@ -485,15 +503,21 @@ namespace ConversorDados
                         model.NomEsc = leitor["EscolaNome"].ToString();
                         model.AnoEsc = leitor["EscolaAno"].ToString();
                         model.PerEsc = leitor["EscolaPeriodo"].ToString();
-                        model.GolCli = Convert.ToBoolean(leitor["Goleiro"].ToString());
+                        if (leitor["Goleiro"].ToString().Equals("0"))
+                            model.GolCli = false;
+                        else model.GolCli = true;
                         model.NomORe = leitor["NomeOutroResponsavel"].ToString();
                         model.RGOre = leitor["RgOutroResponsavel"].ToString();
                         model.CPFOre = leitor["CpfOutroResponsavel"].ToString();
                         model.WhtOre = leitor["WhatsOutroResponsavel"].ToString();
                         model.ResTer = Convert.ToInt32(leitor["ResponsavelTermoAdesao"].ToString());
-                        model.TratMed = Convert.ToBoolean(leitor["TratamentoMedico"].ToString());
+                        if (leitor["TratamentoMedico"].ToString().Equals("0"))
+                            model.TratMed = false;
+                        else model.TratMed = true;
                         model.DesTra = leitor["DescTratMed"].ToString();
-                        model.TemAle = Convert.ToBoolean(leitor["TemAlergia"].ToString());
+                        if (leitor["TemAlergia"].ToString().Equals("0"))
+                            model.TemAle = false;
+                        else model.TemAle = true;
                         model.DesAle = leitor["DescAle"].ToString();
                         model.NomCam = leitor["NomCam"].ToString();
                         model.NumCam = leitor["NumCam"].ToString();
@@ -509,15 +533,16 @@ namespace ConversorDados
                         lista.Add(model);
                     }
                     conexao.Close();
-                }
-
-                //Inserir no postgreSQL...
-                foreach (V040Cli item in lista)
-                {
-                    if (!_NG.Inserir(item).Result)
-                        return;
-                }
+                }                
             }
+            //Inserir no postgreSQL...
+            foreach (V040Cli item in lista)
+            {
+                if (!_NG.Inserir(item).Result)
+                    return;
+            }
+
+            MessageBox.Show("Dados da Tabela Cliente Convertido com Sucesso.");
         }
 
         private void btnDependente_Click(object sender, EventArgs e)
@@ -526,7 +551,7 @@ namespace ConversorDados
             V040Dep model = null;
             V040DepNG _NG = new V040DepNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [ClienteDependente]";
+            string query = "SELECT * FROM [ClienteDependente]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -550,7 +575,9 @@ namespace ConversorDados
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
                         model.GrpDep = leitor["GrauParentesco"].ToString();
                         model.CodPla = Convert.ToInt32(leitor["ClubePlanoId"].ToString());
-                        model.EscDep = Convert.ToBoolean(leitor["IsEscolinha"].ToString());
+                        if (leitor["IsEscolinha"].ToString().Equals("0"))
+                            model.EscDep = false;
+                        else model.EscDep = true;
                         lista.Add(model);
                     }
                     conexao.Close();
@@ -564,6 +591,8 @@ namespace ConversorDados
                     return;
             }
 
+            MessageBox.Show("Dados da Tabela Dependente Convertido com Sucesso.");
+
         }
 
         private void btnTorneio_Click(object sender, EventArgs e)
@@ -572,7 +601,7 @@ namespace ConversorDados
             V180Trn model = null;
             V180TrnNG _NG = new V180TrnNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Torneio]";
+            string query = "SELECT * FROM [Torneio]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -602,6 +631,8 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+
+            MessageBox.Show("Dados da Tabela Torneio Convertido com Sucesso.");
         }
 
         private void btnTorneioEquipe_Click(object sender, EventArgs e)
@@ -610,7 +641,7 @@ namespace ConversorDados
             V180Teq model = null;
             V180TeqNG _NG = new V180TeqNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [TorneioEquipe]";
+            string query = "SELECT * FROM [TorneioEquipe]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -638,6 +669,8 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+
+            MessageBox.Show("Dados da Tabela Torneio Equipe Convertido com Sucesso.");
         }
 
         private void btnMovimentacao_Click(object sender, EventArgs e)
@@ -646,7 +679,7 @@ namespace ConversorDados
             V105Mov model = null;
             V105MovNG _NG = new V105MovNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [MovimentacaoEstoque]";
+            string query = "SELECT * FROM [MovimentacaoEstoque]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -678,6 +711,8 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+
+            MessageBox.Show("Dados da Tabela de Movimentação de Estoque Convertido com Sucesso.");
         }
 
         private void btnMovFinanceiro_Click(object sender, EventArgs e)
@@ -686,7 +721,7 @@ namespace ConversorDados
             V110MovFin model = null;
             V110MovFinNG _NG = new V110MovFinNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Movimentacao]";
+            string query = "SELECT * FROM [Movimentacao]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -715,6 +750,8 @@ namespace ConversorDados
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+
+            MessageBox.Show("Dados da Tabela de MOvimentação Financeira Convertido com Sucesso.");
         }
 
         private void btnVenda_Click(object sender, EventArgs e)
@@ -723,7 +760,7 @@ namespace ConversorDados
             V105Cup model = null;
             V105CupNG _NG = new V105CupNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT [*] FROM [Venda]";
+            string query = "SELECT * FROM [Venda]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -746,13 +783,15 @@ namespace ConversorDados
                 conexao.Close();
             }
 
-            
+
             //Inserir no postgreSQL...
             foreach (V105Cup item in lista)
             {
                 if (!_NG.Inserir(item).Result)
                     return;
             }
+
+            MessageBox.Show("Dados da Tabela Venda Convertido com Sucesso.");
         }
 
         private void btnVendaItem_Click(object sender, EventArgs e)
@@ -761,7 +800,7 @@ namespace ConversorDados
             V105Cit model = null;
             V105CitNG _NGItem = new V105CitNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string qry = "SELECT [*] FROM [VendaItem]";
+            string qry = "SELECT * FROM [VendaItem]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
                 conexao.Open();
@@ -786,11 +825,18 @@ namespace ConversorDados
                 conexao.Close();
             }
             //Inserir no postgreSQL...
-            foreach (V105Cit item in listaItens) 
+            foreach (V105Cit item in listaItens)
             {
                 if (!_NGItem.Inserir(item).Result)
                     return;
             }
+
+            MessageBox.Show("Dados da Tabela Venda Item Convertido com Sucesso.");
+        }
+
+        private void FrmConversorDados_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

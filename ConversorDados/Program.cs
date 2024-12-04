@@ -1,5 +1,8 @@
 using ConversorDados.Context;
 using System.Configuration;
+using Vinum.Core.Negocios;
+using Vinum.Entidades.Sistema;
+using Vinum.Infra.Data;
 
 namespace ConversorDados
 {
@@ -22,6 +25,10 @@ namespace ConversorDados
         private static void CarregarDados() 
         {
             new SqlServerContext(ConfigurationManager.AppSettings["banco"]);
+
+            new PostgreSqlContext(ConfigurationManager.AppSettings["servidor"], ConfigurationManager.AppSettings["bancoPostgresql"], ConfigurationManager.AppSettings["porta"]);
+
+            Sessao.Instancia.V000Con = new V000ConNG().Buscar().Result;
         }
     }
 }
