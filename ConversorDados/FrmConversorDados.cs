@@ -1,5 +1,6 @@
 using ConversorDados.Context;
 using Microsoft.Data.SqlClient;
+using Vinum.Compartilhado.Extensoes;
 using Vinum.Core.Negocios;
 using Vinum.Entidades.Enums.Modelos;
 using Vinum.Entidades.Modelos;
@@ -211,7 +212,7 @@ namespace ConversorDados
             List<V080Eqp> lista = new List<V080Eqp>();
             V080Eqp model = null;
             V080EqpNG _NG = new V080EqpNG(Vinum.Entidades.Sistema.Sessao.Instancia);
-
+            
             string query = "SELECT * FROM [Equipe]";
             using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
             {
@@ -226,9 +227,9 @@ namespace ConversorDados
                         model = new V080Eqp();
                         model.CodEqp = Convert.ToInt32(leitor["Id"].ToString());
                         model.NomEqp = leitor["Nome"].ToString();
-                        model.LogEqp = Convert.FromBase64String(leitor["Logo"].ToString());
+                        model.LogEqp = leitor.ConvertByteArray("Logo");
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
-                        lista.Add(model);
+                        lista.Add(model);                       
                     }
                 }
                 conexao.Close();
@@ -302,7 +303,11 @@ namespace ConversorDados
                         model.SnmVen = leitor["SobreNome"].ToString();
                         model.EmlVen = leitor["Email"].ToString();
                         model.TelVen = leitor["Telefone"].ToString();
-                        model.SitVen = Convert.ToBoolean(leitor["Situacao"].ToString());
+
+                        if (leitor["Situacao"].ToString().Equals("0"))
+                             model.SitVen = false;
+                        else model.SitVen = true;
+
                         model.ObsVen = leitor["Obs"].ToString();
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
                         lista.Add(model);
@@ -386,7 +391,7 @@ namespace ConversorDados
                         model.EmlFil = leitor["Email"].ToString();
                         model.TelFil = leitor["Telefone"].ToString();
                         model.CelFil = leitor["Celular"].ToString();
-                        model.LogFil = Convert.FromBase64String(leitor["Logo"].ToString());
+                        model.LogFil = leitor.ConvertByteArray("Logo");
                         model.CodCid = Convert.ToInt32(leitor["CidadeId"].ToString());
                         model.CodEmp = Convert.ToInt32(leitor["EmpresaId"].ToString());
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
@@ -474,26 +479,38 @@ namespace ConversorDados
                         model.CelCli = leitor["Celular"].ToString();
                         model.WhtCli = leitor["Whats"].ToString();
                         model.EmlCli = leitor["Email"].ToString();
-                        model.TpPCli = Convert.ToInt32(leitor["FisJur"].ToString());
+
+                        if (leitor["FisJur"].ToString().Equals("true"))
+                            model.TpPCli = 0;
+                        else model.TpPCli = 1;
+
                         model.DocCli = leitor["CpfIe"].ToString();
                         model.RGIeCli = leitor["RgCnpj"].ToString();
+
                         if (leitor["Situacao"].ToString().Equals("0"))
                             model.SitCli = false;
                         else model.SitCli = true;
+
                         model.OBSCli = leitor["Obs"].ToString();
                         model.NascCli = Convert.ToDateTime(leitor["DataNascimento"].ToString());
                         model.TpSCli = leitor["TipoSanguineo"].ToString();
+
                         model.DiaPag = Convert.ToInt32(leitor["DiaPagamento"].ToString());
-                        model.SexCli = (V040CliSexoEnum)Convert.ToInt32(leitor["Sexo"].ToString());
+                        if (leitor["Sexo"].ToString().Equals("true"))
+                            model.SexCli = V040CliSexoEnum.Masculino;
+                        else model.SexCli = V040CliSexoEnum.Feminino;
+
                         model.NomRep = leitor["NomeResponsavel"].ToString();
                         model.RGRep = leitor["RgResponsavel"].ToString();
                         model.CPFRep = leitor["CpfResponsavel"].ToString();
+
                         if (leitor["MenorIdade"].ToString().Equals("0"))
                             model.MenIda = false;
                         else model.MenIda = true;
+
                         model.CodPla = Convert.ToInt32(leitor["ClubePlanoId"].ToString());
                         model.CodCid = Convert.ToInt32(leitor["CidadeId"].ToString());
-                        model.CodVen = Convert.ToInt32(leitor["VendadeprId"].ToString());
+                        model.CodVen = Convert.ToInt32(leitor["VendedorId"].ToString());
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
                         model.WhtRep = leitor["WhatsResponsavel"].ToString();
                         model.NomPai = leitor["NomePai"].ToString();
@@ -503,33 +520,47 @@ namespace ConversorDados
                         model.NomEsc = leitor["EscolaNome"].ToString();
                         model.AnoEsc = leitor["EscolaAno"].ToString();
                         model.PerEsc = leitor["EscolaPeriodo"].ToString();
+
                         if (leitor["Goleiro"].ToString().Equals("0"))
                             model.GolCli = false;
                         else model.GolCli = true;
+
                         model.NomORe = leitor["NomeOutroResponsavel"].ToString();
                         model.RGOre = leitor["RgOutroResponsavel"].ToString();
                         model.CPFOre = leitor["CpfOutroResponsavel"].ToString();
                         model.WhtOre = leitor["WhatsOutroResponsavel"].ToString();
                         model.ResTer = Convert.ToInt32(leitor["ResponsavelTermoAdesao"].ToString());
-                        if (leitor["TratamentoMedico"].ToString().Equals("0"))
+
+                        if (leitor["TratMed"].ToString().Equals("0"))
                             model.TratMed = false;
                         else model.TratMed = true;
+
                         model.DesTra = leitor["DescTratMed"].ToString();
-                        if (leitor["TemAlergia"].ToString().Equals("0"))
+
+                        if (leitor["TemAle"].ToString().Equals("0"))
                             model.TemAle = false;
                         else model.TemAle = true;
+
                         model.DesAle = leitor["DescAle"].ToString();
                         model.NomCam = leitor["NomCam"].ToString();
                         model.NumCam = leitor["NumCam"].ToString();
                         model.TamCam = leitor["tamcam"].ToString();
-                        model.DtBlo = Convert.ToDateTime(leitor["DataBloqueio"].ToString());
-                        model.FotByt = Convert.FromBase64String(leitor["FotoByte"].ToString());
+
+                        if (!string.IsNullOrEmpty(leitor["DataBloqueio"].ToString()))
+                            model.DtBlo =  Convert.ToDateTime(leitor["DataBloqueio"].ToString());
+
+                        model.FotByt = leitor.ConvertByteArray("FotoByte");
                         model.CrtCli = leitor["Cartao"].ToString();
-                        model.CodEqp = Convert.ToInt32(leitor["EquipeId"].ToString());
-                        model.EqpPos = leitor["EquipePosicao"].ToString();
-                        model.EqpAlt = Convert.ToDecimal(leitor["EquipeAltura"].ToString());
-                        model.EqpPes = Convert.ToDecimal(leitor["EquipePeso"].ToString());
-                        model.CodPle = Convert.ToInt32(leitor["ClubePlanoEscolinhaId"].ToString());
+
+                        if (!string.IsNullOrEmpty(leitor["EquipeId"].ToString()))
+                        {
+                            model.CodEqp = Convert.ToInt32(leitor["EquipeId"].ToString());
+                            model.EqpPos = leitor["EquipePosicao"].ToString();
+                            model.EqpAlt = Convert.ToDecimal(leitor["EquipeAltura"].ToString());
+                            model.EqpPes = Convert.ToDecimal(leitor["EquipePeso"].ToString());
+                        }
+                        if (!string.IsNullOrEmpty(leitor["ClubePlanoEscolinhaId"].ToString()))
+                           model.CodPle = Convert.ToInt32(leitor["ClubePlanoEscolinhaId"].ToString());
                         lista.Add(model);
                     }
                     conexao.Close();
@@ -570,7 +601,7 @@ namespace ConversorDados
                         model.RGDep = leitor["RG"].ToString();
                         model.CPFDep = leitor["CPF"].ToString();
                         model.CrtDep = leitor["Cartao"].ToString();
-                        model.FotDep = Convert.FromBase64String(leitor["FotoByte"].ToString());
+                        model.FotDep = leitor.ConvertByteArray("FotoByte");
                         model.NascDep = Convert.ToDateTime(leitor["DataNascimento"].ToString());
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
                         model.GrpDep = leitor["GrauParentesco"].ToString();
@@ -615,7 +646,7 @@ namespace ConversorDados
                         model = new V180Trn();
                         model.CodTrn = Convert.ToInt32(leitor["Id"].ToString());
                         model.NomTrn = leitor["Nome"].ToString();
-                        model.LogTrn = Convert.FromBase64String(leitor["Logo"].ToString());
+                        model.LogTrn = leitor.ConvertByteArray("Logo");
                         model.DatIni = Convert.ToDateTime(leitor["DataInicio"].ToString());
                         model.DatFim = Convert.ToDateTime(leitor["DataFim"].ToString());
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
@@ -837,6 +868,6 @@ namespace ConversorDados
         private void FrmConversorDados_Load(object sender, EventArgs e)
         {
 
-        }
+        }       
     }
 }

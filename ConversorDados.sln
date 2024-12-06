@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinum.Infra", "..\Vinum\src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinum.Core", "..\Vinum\src\Vinum.Core\Vinum.Core.csproj", "{F8E563EC-6D69-4D3B-91EC-81CC5AC9CC19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinum.Compartilhado", "..\Vinum\src\Vinum.Compartilhado\Vinum.Compartilhado.csproj", "{9E1C59DA-9E0E-42C0-B191-405FD4C52897}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{F8E563EC-6D69-4D3B-91EC-81CC5AC9CC19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8E563EC-6D69-4D3B-91EC-81CC5AC9CC19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8E563EC-6D69-4D3B-91EC-81CC5AC9CC19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E1C59DA-9E0E-42C0-B191-405FD4C52897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E1C59DA-9E0E-42C0-B191-405FD4C52897}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E1C59DA-9E0E-42C0-B191-405FD4C52897}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E1C59DA-9E0E-42C0-B191-405FD4C52897}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
