@@ -4,14 +4,239 @@ using Vinum.Compartilhado.Extensoes;
 using Vinum.Core.Negocios;
 using Vinum.Entidades.Enums.Modelos;
 using Vinum.Entidades.Modelos;
+using Vinum.Entidades.Sistema;
+using Vinum.Entidades.Uteis.Extensions;
 
 namespace ConversorDados
 {
     public partial class FrmConversorDados : Form
     {
+
+        private List<V040Dep> ListaDependente = new List<V040Dep>();
+        private List<V110MovFin> ListaMovFinanceiro = new List<V110MovFin>();
+        private List<V105Cup> ListaVenda = new List<V105Cup>();
+        private List<V105Cit> ListaItens = new List<V105Cit>();
+        
         public FrmConversorDados()
         {
             InitializeComponent();
+        }
+
+        
+        private List<V040Dep> ListarDependente() 
+        {
+            List<V040Dep> lista = new List<V040Dep>();
+            V040Dep model = null;
+
+            string query = "SELECT * FROM [ClienteDependente]";
+            using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
+            {
+                conexao.Open();
+                using (SqlCommand comando = new SqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = query;
+                    SqlDataReader leitor = comando.ExecuteReader();
+                    while (leitor.Read())
+                    {
+                        model = new V040Dep();
+                        model.CodDep = Convert.ToInt32(leitor["Id"].ToString());
+                        model.NomDep = leitor["Nome"].ToString();
+                        model.SnmDep = leitor["SobreNome"].ToString();
+                        model.CodCli = Convert.ToInt32(leitor["ClienteId"].ToString());
+                        model.RGDep = leitor["RG"].ToString();
+                        model.CPFDep = leitor["CPF"].ToString();
+                        model.CrtDep = leitor["Cartao"].ToString();
+                        model.FotDep = leitor.ConvertByteArray("FotoByte");
+                        model.NascDep = Convert.ToDateTime(leitor["DataNascimento"].ToString());
+                        model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
+                        model.GrpDep = leitor["GrauParentesco"].ToString();
+                        if (leitor["ClubePlanoId"].ToString().HasValue())
+                            model.CodPla = Convert.ToInt32(leitor["ClubePlanoId"].ToString());
+                        else model.CodPla = 0;
+                        model.EscDep = Convert.ToBoolean(leitor["IsEscolinha"].ToString());
+                        lista.Add(model);
+                    }
+                    conexao.Close();
+                }
+            }
+            return lista;
+        }
+        private void InserirDependente(int codCli, int novoCodCli) 
+        {
+            V040DepNG _NG = new V040DepNG(Vinum.Entidades.Sistema.Sessao.Instancia);
+
+            try 
+            {
+                foreach (V040Dep item in this.ListaDependente.Where(x => x.CodCli == codCli).ToList())
+                {
+                    item.CodCli = novoCodCli;
+                    if (!_NG.Inserir(item).Result)
+                        return;
+                }
+            }
+            catch (Exception ex) 
+            {
+                throw ex;
+            }
+
+            
+        }
+
+        private List<V110MovFin> ListarMovFinanceiro() 
+        {
+            List<V110MovFin> lista = new List<V110MovFin>();
+            V110MovFin model = null;
+
+            string query = "SELECT * FROM [Movimentacao]";
+            using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
+            {
+                conexao.Open();
+                using (SqlCommand comando = new SqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = query;
+                    SqlDataReader leitor = comando.ExecuteReader();
+                    while (leitor.Read())
+                    {
+                        model = new V110MovFin();
+                        model.CodMovFin = Convert.ToInt32(leitor["Id"].ToString());
+                        model.CodCli = Convert.ToInt32(leitor["ClienteId"].ToString());
+                        model.VlrMovFin = Convert.ToDecimal(leitor["Valor"].ToString());
+                        model.TipMovFin = leitor["CredDeb"].ToString();
+                        model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
+                        lista.Add(model);
+                    }
+                }
+                conexao.Close();
+            }
+            return lista;
+        }
+
+        private void InserirMovFinanceiro(int codCli, int novoCodCli) 
+        {
+            V110MovFinNG _NG = new V110MovFinNG(Vinum.Entidades.Sistema.Sessao.Instancia);
+
+            try
+            {
+                foreach (V110MovFin item in this.ListaMovFinanceiro.Where(x => x.CodCli == codCli).ToList())
+                {
+                    item.CodCli = novoCodCli;
+                    if (!_NG.Inserir(item).Result)
+                        return;
+                }
+            }
+            catch (Exception ex) 
+            {
+                throw ex;
+            }                        
+        }
+
+        private List<V105Cup> ListarVendas() 
+        {
+            List<V105Cup> lista = new List<V105Cup>();
+            V105Cup model = null;
+
+            string query = "SELECT * FROM [Venda]";
+            using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
+            {
+                conexao.Open();
+                using (SqlCommand comando = new SqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = query;
+                    SqlDataReader leitor = comando.ExecuteReader();
+                    while (leitor.Read())
+                    {
+                        model = new V105Cup();
+                        model.CodCup = Convert.ToInt32(leitor["Id"].ToString());
+                        model.CodCli = Convert.ToInt32(leitor["ClienteId"].ToString());
+                        if (leitor["PontoDeVendaId"].ToString().HasValue())
+                            model.CodPtv = Convert.ToInt32(leitor["PontoDeVendaId"].ToString());
+                        model.TotCup = Convert.ToDecimal(leitor["ValorTotal"].ToString());
+                        model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
+                        lista.Add(model);
+                    }
+                }
+                conexao.Close();
+            }
+            return lista;
+        }
+
+        private void InserirVendas(int codCli, int novoCodCli) 
+        {
+            V105CupNG _NG = new V105CupNG(Sessao.Instancia);
+
+            try 
+            {
+                foreach (V105Cup item in this.ListaVenda.Where(x => x.CodCli == codCli).ToList())
+                {
+                    int codVenda = item.CodCup;
+                    item.CodCli = novoCodCli;
+                    if (_NG.Inserir(item).Result)
+                    {
+                        int novoIdVenda = _NG.RetornarUltimoCodigoInserido().Result;
+                        InserirVendaItens(codVenda, novoIdVenda);
+                    }
+
+                }
+            }
+            catch (Exception ex) 
+            {
+                throw ex;
+            }            
+        }
+
+        private List<V105Cit> ListarVendaItens() 
+        {
+            List<V105Cit> lista = new List<V105Cit>();
+            V105Cit model = null;
+
+            string qry = "SELECT * FROM [VendaItem]";
+            using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
+            {
+                conexao.Open();
+                using (SqlCommand comando = new SqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = qry;
+                    SqlDataReader leitor = comando.ExecuteReader();
+                    while (leitor.Read())
+                    {
+                        model = new V105Cit();
+                        model.CodCit = Convert.ToInt32(leitor["Id"].ToString());
+                        model.CodPro = Convert.ToInt32(leitor["ProdutoId"].ToString());
+                        model.CodCup = Convert.ToInt32(leitor["VendaId"].ToString());
+                        model.SeqVen = Convert.ToInt32(leitor["SeqVen"].ToString());
+                        model.VlrUn = Convert.ToDecimal(leitor["ValorUn"].ToString().Replace(",", "."));
+                        model.Qtd = Convert.ToInt32(leitor["Quantidade"].ToString().Replace(",00", ""));
+                        model.VlrTot = Convert.ToDecimal(leitor["ValorTotal"].ToString().Replace(",", "."));
+                        model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
+                        lista.Add(model);
+                    }
+                }
+                conexao.Close();
+            }
+            return lista;
+        }
+
+        private void InserirVendaItens(int codVenda, int novoCodVenda) 
+        {
+            V105CitNG _NG = new V105CitNG(Sessao.Instancia);
+
+            try
+            {
+                foreach (V105Cit item in this.ListaItens.Where(x => x.CodCup == codVenda).ToList())
+                {
+                    item.CodCup = novoCodVenda;
+                    if (!_NG.Inserir(item).Result)
+                        return;
+                }
+            }
+            catch (Exception ex) 
+            {
+                throw ex;
+            }          
         }
 
         private void btnPlano_Click(object sender, EventArgs e)
@@ -35,9 +260,7 @@ namespace ConversorDados
                         model.CodPla = Convert.ToInt32(leitor["Id"].ToString());
                         model.NomPla = leitor["Nome"].ToString();
                         model.VlrPla = Convert.ToDecimal(leitor["Valor"].ToString());
-                        if (leitor["ImpAdEscolinha"].ToString().Equals("0"))
-                            model.ImpPla = false;
-                        else model.ImpPla = true;
+                        model.ImpPla = Convert.ToBoolean(leitor["ImpAdEscolinha"].ToString());
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
                         lista.Add(model);
                     }
@@ -193,6 +416,7 @@ namespace ConversorDados
                         model.LogUsu = leitor["Email"].ToString();
                         model.SenUsu = leitor["Senha"].ToString();
                         model.StaUsu = V005UsuStatusEnum.ATIVO;
+                        model.CodUGr = 1;
                         lista.Add(model);
                     }
                 }
@@ -303,11 +527,7 @@ namespace ConversorDados
                         model.SnmVen = leitor["SobreNome"].ToString();
                         model.EmlVen = leitor["Email"].ToString();
                         model.TelVen = leitor["Telefone"].ToString();
-
-                        if (leitor["Situacao"].ToString().Equals("0"))
-                             model.SitVen = false;
-                        else model.SitVen = true;
-
+                        model.SitVen = Convert.ToBoolean(leitor["Situacao"].ToString());
                         model.ObsVen = leitor["Obs"].ToString();
                         model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
                         lista.Add(model);
@@ -480,7 +700,7 @@ namespace ConversorDados
                         model.WhtCli = leitor["Whats"].ToString();
                         model.EmlCli = leitor["Email"].ToString();
 
-                        if (leitor["FisJur"].ToString().Equals("true"))
+                        if (leitor["FisJur"].ToString().Equals("false"))
                             model.TpPCli = 0;
                         else model.TpPCli = 1;
 
@@ -488,8 +708,8 @@ namespace ConversorDados
                         model.RGIeCli = leitor["RgCnpj"].ToString();
 
                         if (leitor["Situacao"].ToString().Equals("0"))
-                            model.SitCli = false;
-                        else model.SitCli = true;
+                            model.SitCli = 0;
+                        else model.SitCli = 1;
 
                         model.OBSCli = leitor["Obs"].ToString();
                         model.NascCli = Convert.ToDateTime(leitor["DataNascimento"].ToString());
@@ -567,62 +787,83 @@ namespace ConversorDados
                 }                
             }
             //Inserir no postgreSQL...
-            foreach (V040Cli item in lista)
+            try 
             {
-                if (!_NG.Inserir(item).Result)
-                    return;
-            }
 
-            MessageBox.Show("Dados da Tabela Cliente Convertido com Sucesso.");
+                this.ListaDependente = ListarDependente();
+                //this.ListaMovFinanceiro = ListarMovFinanceiro();
+                //this.ListaVenda = ListarVendas();
+                //this.ListaItens = ListarVendaItens();
+
+                _NG.BeginTransaction();
+                foreach (V040Cli item in lista)
+                {
+                    int codCli = item.CodCli;
+                    if (_NG.Inserir(item).Result) 
+                    {
+                        int novoId = item.CodCli;
+                        InserirDependente(codCli, novoId);
+                        //InserirMovFinanceiro(codCli, novoId);
+                        //InserirVendas(codCli, novoId);
+                    }                        
+                }
+                _NG.CommitTransaction();
+            }
+            catch (Exception ex) 
+            {
+                _NG.RollBackTransaction();
+                throw ex;
+            } 
+            MessageBox.Show("Dados da Tabela Cliente/Dados do Cliente Convertido com Sucesso.");
         }
 
         private void btnDependente_Click(object sender, EventArgs e)
         {
-            List<V040Dep> lista = new List<V040Dep>();
-            V040Dep model = null;
-            V040DepNG _NG = new V040DepNG(Vinum.Entidades.Sistema.Sessao.Instancia);
+            //List<V040Dep> lista = new List<V040Dep>();
+            //V040Dep model = null;
+            //V040DepNG _NG = new V040DepNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT * FROM [ClienteDependente]";
-            using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
-            {
-                conexao.Open();
-                using (SqlCommand comando = new SqlCommand())
-                {
-                    comando.Connection = conexao;
-                    comando.CommandText = query;
-                    SqlDataReader leitor = comando.ExecuteReader();
-                    while (leitor.Read())
-                    {
-                        model = new V040Dep();
-                        model.CodDep = Convert.ToInt32(leitor["Id"].ToString());
-                        model.NomDep = leitor["Nome"].ToString();
-                        model.SnmDep = leitor["SobreNome"].ToString();
-                        model.CodCli = Convert.ToInt32(leitor["ClienteId"].ToString());
-                        model.RGDep = leitor["RG"].ToString();
-                        model.CPFDep = leitor["CPF"].ToString();
-                        model.CrtDep = leitor["Cartao"].ToString();
-                        model.FotDep = leitor.ConvertByteArray("FotoByte");
-                        model.NascDep = Convert.ToDateTime(leitor["DataNascimento"].ToString());
-                        model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
-                        model.GrpDep = leitor["GrauParentesco"].ToString();
-                        model.CodPla = Convert.ToInt32(leitor["ClubePlanoId"].ToString());
-                        if (leitor["IsEscolinha"].ToString().Equals("0"))
-                            model.EscDep = false;
-                        else model.EscDep = true;
-                        lista.Add(model);
-                    }
-                    conexao.Close();
-                }
-            }
+            //string query = "SELECT * FROM [ClienteDependente]";
+            //using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
+            //{
+            //    conexao.Open();
+            //    using (SqlCommand comando = new SqlCommand())
+            //    {
+            //        comando.Connection = conexao;
+            //        comando.CommandText = query;
+            //        SqlDataReader leitor = comando.ExecuteReader();
+            //        while (leitor.Read())
+            //        {
+            //            model = new V040Dep();
+            //            model.CodDep = Convert.ToInt32(leitor["Id"].ToString());
+            //            model.NomDep = leitor["Nome"].ToString();
+            //            model.SnmDep = leitor["SobreNome"].ToString();
+            //            model.CodCli = Convert.ToInt32(leitor["ClienteId"].ToString());
+            //            model.RGDep = leitor["RG"].ToString();
+            //            model.CPFDep = leitor["CPF"].ToString();
+            //            model.CrtDep = leitor["Cartao"].ToString();
+            //            model.FotDep = leitor.ConvertByteArray("FotoByte");
+            //            model.NascDep = Convert.ToDateTime(leitor["DataNascimento"].ToString());
+            //            model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
+            //            model.GrpDep = leitor["GrauParentesco"].ToString();
+            //            model.CodPla = Convert.ToInt32(leitor["ClubePlanoId"].ToString());
+            //            if (leitor["IsEscolinha"].ToString().Equals("0"))
+            //                model.EscDep = false;
+            //            else model.EscDep = true;
+            //            lista.Add(model);
+            //        }
+            //        conexao.Close();
+            //    }
+            //}
 
-            //Inserir no postgreSQL...
-            foreach (V040Dep item in lista)
-            {
-                if (!_NG.Inserir(item).Result)
-                    return;
-            }
+            ////Inserir no postgreSQL...
+            //foreach (V040Dep item in lista)
+            //{
+            //    if (!_NG.Inserir(item).Result)
+            //        return;
+            //}
 
-            MessageBox.Show("Dados da Tabela Dependente Convertido com Sucesso.");
+            //MessageBox.Show("Dados da Tabela Dependente Convertido com Sucesso.");
 
         }
 
@@ -748,121 +989,121 @@ namespace ConversorDados
 
         private void btnMovFinanceiro_Click(object sender, EventArgs e)
         {
-            List<V110MovFin> lista = new List<V110MovFin>();
-            V110MovFin model = null;
-            V110MovFinNG _NG = new V110MovFinNG(Vinum.Entidades.Sistema.Sessao.Instancia);
+            //List<V110MovFin> lista = new List<V110MovFin>();
+            //V110MovFin model = null;
+            //V110MovFinNG _NG = new V110MovFinNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT * FROM [Movimentacao]";
-            using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
-            {
-                conexao.Open();
-                using (SqlCommand comando = new SqlCommand())
-                {
-                    comando.Connection = conexao;
-                    comando.CommandText = query;
-                    SqlDataReader leitor = comando.ExecuteReader();
-                    while (leitor.Read())
-                    {
-                        model = new V110MovFin();
-                        model.CodMovFin = Convert.ToInt32(leitor["Id"].ToString());
-                        model.CodCli = Convert.ToInt32(leitor["ClienteId"].ToString());
-                        model.VlrMovFin = Convert.ToDecimal(leitor["Valor"].ToString());
-                        model.TipMovFin = leitor["CredDeb"].ToString();
-                        model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
-                        lista.Add(model);
-                    }
-                }
-                conexao.Close();
-            }
+            //string query = "SELECT * FROM [Movimentacao]";
+            //using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
+            //{
+            //    conexao.Open();
+            //    using (SqlCommand comando = new SqlCommand())
+            //    {
+            //        comando.Connection = conexao;
+            //        comando.CommandText = query;
+            //        SqlDataReader leitor = comando.ExecuteReader();
+            //        while (leitor.Read())
+            //        {
+            //            model = new V110MovFin();
+            //            model.CodMovFin = Convert.ToInt32(leitor["Id"].ToString());
+            //            model.CodCli = Convert.ToInt32(leitor["ClienteId"].ToString());
+            //            model.VlrMovFin = Convert.ToDecimal(leitor["Valor"].ToString());
+            //            model.TipMovFin = leitor["CredDeb"].ToString();
+            //            model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
+            //            lista.Add(model);
+            //        }
+            //    }
+            //    conexao.Close();
+            //}
 
-            //Incluir postgreSQL...
-            foreach (V110MovFin item in lista)
-            {
-                if (!_NG.Inserir(item).Result)
-                    return;
-            }
+            ////Incluir postgreSQL...
+            //foreach (V110MovFin item in lista)
+            //{
+            //    if (!_NG.Inserir(item).Result)
+            //        return;
+            //}
 
-            MessageBox.Show("Dados da Tabela de MOvimentação Financeira Convertido com Sucesso.");
+            //MessageBox.Show("Dados da Tabela de MOvimentação Financeira Convertido com Sucesso.");
         }
 
         private void btnVenda_Click(object sender, EventArgs e)
         {
-            List<V105Cup> lista = new List<V105Cup>();
-            V105Cup model = null;
-            V105CupNG _NG = new V105CupNG(Vinum.Entidades.Sistema.Sessao.Instancia);
+            //List<V105Cup> lista = new List<V105Cup>();
+            //V105Cup model = null;
+            //V105CupNG _NG = new V105CupNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string query = "SELECT * FROM [Venda]";
-            using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
-            {
-                conexao.Open();
-                using (SqlCommand comando = new SqlCommand())
-                {
-                    comando.Connection = conexao;
-                    comando.CommandText = query;
-                    SqlDataReader leitor = comando.ExecuteReader();
-                    while (leitor.Read())
-                    {
-                        model = new V105Cup();
-                        model.CodCup = Convert.ToInt32(leitor["Id"].ToString());
-                        model.CodCli = Convert.ToInt32(leitor["ClienteId"].ToString());
-                        model.CodPtv = Convert.ToInt32(leitor["PontoDeVendaId"].ToString());
-                        model.TotCup = Convert.ToDecimal(leitor["ValorTotal"].ToString());
-                        model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
-                        lista.Add(model);
-                    }
-                }
-                conexao.Close();
-            }
+            //string query = "SELECT * FROM [Venda]";
+            //using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
+            //{
+            //    conexao.Open();
+            //    using (SqlCommand comando = new SqlCommand())
+            //    {
+            //        comando.Connection = conexao;
+            //        comando.CommandText = query;
+            //        SqlDataReader leitor = comando.ExecuteReader();
+            //        while (leitor.Read())
+            //        {
+            //            model = new V105Cup();
+            //            model.CodCup = Convert.ToInt32(leitor["Id"].ToString());
+            //            model.CodCli = Convert.ToInt32(leitor["ClienteId"].ToString());
+            //            model.CodPtv = Convert.ToInt32(leitor["PontoDeVendaId"].ToString());
+            //            model.TotCup = Convert.ToDecimal(leitor["ValorTotal"].ToString());
+            //            model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
+            //            lista.Add(model);
+            //        }
+            //    }
+            //    conexao.Close();
+            //}
 
 
-            //Inserir no postgreSQL...
-            foreach (V105Cup item in lista)
-            {
-                if (!_NG.Inserir(item).Result)
-                    return;
-            }
+            ////Inserir no postgreSQL...
+            //foreach (V105Cup item in lista)
+            //{
+            //    if (!_NG.Inserir(item).Result)
+            //        return;
+            //}
 
-            MessageBox.Show("Dados da Tabela Venda Convertido com Sucesso.");
+            //MessageBox.Show("Dados da Tabela Venda Convertido com Sucesso.");
         }
 
         private void btnVendaItem_Click(object sender, EventArgs e)
         {
-            List<V105Cit> listaItens = new List<V105Cit>();
-            V105Cit model = null;
-            V105CitNG _NGItem = new V105CitNG(Vinum.Entidades.Sistema.Sessao.Instancia);
+            //List<V105Cit> listaItens = new List<V105Cit>();
+            //V105Cit model = null;
+            //V105CitNG _NGItem = new V105CitNG(Vinum.Entidades.Sistema.Sessao.Instancia);
 
-            string qry = "SELECT * FROM [VendaItem]";
-            using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
-            {
-                conexao.Open();
-                using (SqlCommand comando = new SqlCommand())
-                {
-                    comando.Connection = conexao;
-                    comando.CommandText = qry;
-                    SqlDataReader leitor = comando.ExecuteReader();
-                    while (leitor.Read())
-                    {
-                        model = new V105Cit();
-                        model.CodCit = Convert.ToInt32(leitor["Id"].ToString());
-                        model.CodPro = Convert.ToInt32(leitor["ProdutoId"].ToString());
-                        model.SeqVen = Convert.ToInt32(leitor["SeqVen"].ToString());
-                        model.VlrUn = Convert.ToDecimal(leitor["ValorUn"].ToString());
-                        model.Qtd = Convert.ToInt32(leitor["Quantidade"].ToString());
-                        model.VlrTot = Convert.ToDecimal(leitor["ValorTotal"].ToString());
-                        model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
-                        listaItens.Add(model);
-                    }
-                }
-                conexao.Close();
-            }
+            //string qry = "SELECT * FROM [VendaItem]";
+            //using (SqlConnection conexao = new SqlConnection(SqlServerContext.ConnectionString))
+            //{
+            //    conexao.Open();
+            //    using (SqlCommand comando = new SqlCommand())
+            //    {
+            //        comando.Connection = conexao;
+            //        comando.CommandText = qry;
+            //        SqlDataReader leitor = comando.ExecuteReader();
+            //        while (leitor.Read())
+            //        {
+            //            model = new V105Cit();
+            //            model.CodCit = Convert.ToInt32(leitor["Id"].ToString());
+            //            model.CodPro = Convert.ToInt32(leitor["ProdutoId"].ToString());
+            //            model.SeqVen = Convert.ToInt32(leitor["SeqVen"].ToString());
+            //            model.VlrUn = Convert.ToDecimal(leitor["ValorUn"].ToString());
+            //            model.Qtd = Convert.ToInt32(leitor["Quantidade"].ToString());
+            //            model.VlrTot = Convert.ToDecimal(leitor["ValorTotal"].ToString());
+            //            model.DatCad = Convert.ToDateTime(leitor["DataCadastro"].ToString());
+            //            listaItens.Add(model);
+            //        }
+            //    }
+            //    conexao.Close();
+            //}
+
             //Inserir no postgreSQL...
-            foreach (V105Cit item in listaItens)
-            {
-                if (!_NGItem.Inserir(item).Result)
-                    return;
-            }
-
-            MessageBox.Show("Dados da Tabela Venda Item Convertido com Sucesso.");
+            //foreach (V105Cit item in listaItens)
+            //{
+            //   if (!_NGItem.Inserir(item).Result)
+            //      return;
+            //}
+            //MessageBox.Show("Dados da Tabela Venda Item Convertido com Sucesso.");
         }
 
         private void FrmConversorDados_Load(object sender, EventArgs e)
